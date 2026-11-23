@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>WoofyBark · N.C. Tesla</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--s1:#0b0b10;--s2:#13131b;--line:#1f1f2a;--tx:#ececf1;--mut:#8a8a9a;--acc:#a78bfa;--grn:#3ddc84;--ylw:#f5c04a;--red:#ff5c6c;--gry:#4a4a58;
+--sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.6 var(--sans);min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto 0;height:60vh;background:radial-gradient(60% 100% at 50% 0,rgba(167,139,250,.16),transparent 70%);pointer-events:none;z-index:-1}
+a{color:var(--tx);text-decoration:underline;text-decoration-color:#444;text-underline-offset:3px}a:hover{text-decoration-color:var(--acc)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+nav{--n:5;position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:20;width:152px;height:46px;background:#000;border:1px solid #2a2a36;border-radius:23px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.7);transition:width .55s cubic-bezier(.34,1.45,.45,1),height .55s cubic-bezier(.34,1.45,.45,1),border-radius .45s ease,border-color .3s}
+nav.open{width:min(88vw,248px);height:calc(54px + var(--n) * 46px);border-radius:28px;border-color:#3a3a4a}
+.isl-btn{all:unset;box-sizing:border-box;cursor:pointer;width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:10px;font:500 13px var(--mono);color:var(--tx)}
+.isl-btn:focus-visible{outline:2px solid var(--acc);outline-offset:-4px;border-radius:23px}
+.isl-dot{width:8px;height:8px;border-radius:50%;background:var(--gry);transition:background .3s,box-shadow .3s}
+.isl-dot[data-s=online]{background:var(--grn);box-shadow:0 0 10px var(--grn)}.isl-dot[data-s=idle]{background:var(--ylw);box-shadow:0 0 10px var(--ylw)}.isl-dot[data-s=dnd]{background:var(--red);box-shadow:0 0 10px var(--red)}
+.isl-tabs{padding:2px 8px 8px;visibility:hidden;display:flex;flex-direction:column;gap:2px}
+nav.open .isl-tabs{visibility:visible}
+.isl-tabs a{display:flex;align-items:center;gap:12px;height:44px;padding:0 14px;border-radius:18px;color:var(--mut);text-decoration:none;font:500 14px var(--sans);opacity:0;transform:translateY(-8px) scale(.96);transition:opacity .25s,transform .45s cubic-bezier(.34,1.45,.45,1),background .15s}
+nav.open .isl-tabs a{opacity:1;transform:none;transition-delay:calc(.06s + var(--i) * .04s),calc(.06s + var(--i) * .04s),0s}
+.isl-tabs a:hover{background:var(--s2);color:var(--tx)}
+.isl-tabs a.on{background:var(--s2);color:var(--tx)}
+.scrim{position:fixed;inset:0;z-index:15;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.open{opacity:1;pointer-events:auto}
+main{padding:calc(88px + env(safe-area-inset-top)) 20px 96px;padding-bottom:max(96px,env(safe-area-inset-bottom))}
+.w{max-width:660px;margin:auto}
+section{display:none}section.on{display:block}
+h2{font-size:clamp(30px,7vw,44px);font-weight:600;letter-spacing:-.035em;line-height:1.1}
+h3{font:500 12px var(--mono);color:var(--mut);margin:40px 0 12px}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:10px}
+.page-title{margin-bottom:24px}
+.hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.av{--c:var(--gry);width:96px;height:96px;flex:none}
+.av[data-s=online]{--c:var(--grn)}.av[data-s=idle]{--c:var(--ylw)}.av[data-s=dnd]{--c:var(--red)}
+.av img{width:100%;height:100%;border-radius:50%;display:block;background:var(--s2);box-shadow:0 0 0 3px #000,0 0 0 5px var(--c),0 0 56px color-mix(in srgb,var(--c) 40%,transparent)}
+.un{font:13px var(--mono);color:var(--mut);margin-top:6px}
+.cs{margin-top:20px;border:1px solid var(--line);background:var(--s1);border-radius:999px;padding:4px 16px;display:inline-block;font-size:14px}
+.act{position:relative;overflow:hidden;display:flex;gap:14px;align-items:center;isolation:isolate}
+.act::before{content:"";position:absolute;inset:-30px;background:var(--art) center/cover;filter:blur(36px) saturate(1.4);opacity:.3;z-index:-1}
+.act img,.act .ph{width:68px;height:68px;border-radius:10px;flex:none;object-fit:cover;background:var(--s2)}
+.act .ph{display:grid;place-items:center;font:600 26px var(--sans);color:var(--mut)}
+.act div{min-width:0;flex:1}
+.act p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v{font:12px var(--mono);color:var(--mut)}
+.sm{font-size:13px;color:var(--mut)}
+.bar{height:3px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--tx);width:0}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{background:var(--tx);color:#000;padding:9px 18px;border-radius:999px;font-weight:600;font-size:14px;text-decoration:none}
+.btn.g{background:transparent;color:var(--tx);border:1px solid #33333f}.btn:hover{opacity:.85}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+.grid .card{margin:0;display:block;color:inherit;text-decoration:none;transition:border-color .15s}
+.grid .card:hover{border-color:var(--acc)}
+.grid h4{font-size:15px;font-weight:600}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:0 10px;font:11px var(--mono);margin:12px 6px 0 0;color:var(--mut)}
+.cg{overflow-x:auto}
+.cells{display:grid;grid-template-rows:repeat(7,10px);grid-auto-flow:column;grid-auto-columns:10px;gap:3px;width:max-content}
+.cells i{border-radius:2px;background:#16161f}
+.cells .hide{visibility:hidden}
+.l1{background:#2e2350!important}.l2{background:#5b3fb0!important}.l3{background:#8b6df0!important}.l4{background:#c9b8ff!important}
+.soon{text-align:center;padding:72px 16px}.soon h4{font-size:18px;margin-top:8px}
+.note{border:1px solid #4a3b10;background:#1a1405;padding:10px 14px;border-radius:10px;margin-bottom:20px;font-size:13px}
+@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){main{padding:calc(80px + env(safe-area-inset-top)) 16px 72px}.av{width:80px;height:80px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Pages"></nav>
+<main><div class="w">
+<div class="note" id="note" hidden>Set <code>discordId</code> in the config at the bottom of this file and join the Lanyard server (discord.gg/lanyard) to show live status.</div>
+
+<section id="me">
+<div class="hero">
+<div class="av" id="avwrap" data-s="offline"><img id="av" alt="Discord avatar" src="https://cdn.discordapp.com/embed/avatars/0.png"></div>
+<div><h2 id="nm">WoofyBark</h2><p class="un" id="un">Loading status…</p></div>
+</div>
+<p class="cs" id="cs" hidden></p>
+<div id="meact" style="margin-top:20px"></div>
+
+<h3>about me</h3>
+<div class="card">
+<p>Hey! My name is WoofyBark, also known as Tes. My online alias is “N.C. Tesla”, which comes from Nikola Tesla.</p>
+<p style="margin-top:10px">In my free time I like to create custom software, and I use macOS. I’m building AstralLabs from the ground up with Glow.</p>
+</div>
+
+<h3>contact</h3>
+<div class="card">
+<p>The fastest way is a Discord DM. For code, issues and pull requests, use GitHub.</p>
+<div class="btns">
+<a class="btn" data-link="discord" target="_blank" rel="noopener">Message on Discord</a>
+<a class="btn g" data-link="github" data-text="github" target="_blank" rel="noopener"></a>
+</div>
+</div>
+</section>
+
+<section id="projects">
+<h2 class="page-title">Projects</h2>
+<h3>latest 5 repositories</h3>
+<div class="grid" id="repos"><div class="card sm">Loading repositories…</div></div>
+<h3>contributions, last year <span id="ctotal"></span></h3>
+<div class="card cg" id="cg"><span class="sm">Loading chart…</span></div>
+</section>
+
+<section id="anime">
+<h2 class="page-title">Anime</h2>
+<div class="card soon"><h4>Coming soon</h4><p class="sm">My watchlist and favourites will live here.</p></div>
+</section>
+
+<section id="activity">
+<h2 class="page-title">Activity</h2>
+<h3>right now</h3>
+<div id="nowact"><div class="card sm">Waiting for live status…</div></div>
+<h3>recent on github</h3>
+<div id="events"><div class="card sm">Loading…</div></div>
+<h3>seen during this visit</h3>
+<div id="seen"><div class="card sm">Nothing changed yet. New activity shows up here live.</div></div>
+</section>
+
+<section id="workmates">
+<h2 class="page-title">Workmates</h2>
+<div class="card soon"><h4>Coming soon</h4><p class="sm">The people I build with will be listed here.</p></div>
+</section>
+</div></main>
+
+<script>
+/* ---------- config: the only place identity and pages are defined ---------- */
+const CFG = {
+  discordId: "1493974596624449721",
+  github: "WoofyBark",
+  pages: [["me","me"],["projects","projects"],["anime","anime"],["activity","activity"],["workmates","workmates"]],
+};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const hasId = /^\d{17,20}$/.test(CFG.discordId);
+const ago = d => { const s = (Date.now() - new Date(d)) / 1000; for (const [n, u] of [[86400,"d"],[3600,"h"],[60,"m"]]) if (s >= n) return Math.floor(s / n) + u + " ago"; return "just now"; };
+
+/* ---------- shell: nav, routing, links (all derived from CFG) ---------- */
+const nav = $("nav");
+nav.style.setProperty("--n", CFG.pages.length);
+nav.innerHTML = `<button class="isl-btn" id="islbtn" aria-expanded="false" aria-controls="isltabs"><i class="isl-dot" id="isldot"></i><span id="isllabel"></span></button><div class="isl-tabs" id="isltabs">${CFG.pages.map(([id, label], i) => `<a href="#${id}" data-p="${id}" style="--i:${i}">${label}</a>`).join("")}</div>`;
+const scrim = document.createElement("div"); scrim.className = "scrim"; document.body.append(scrim);
+function setOpen(o){ nav.classList.toggle("open", o); scrim.classList.toggle("open", o); $("islbtn").setAttribute("aria-expanded", o); }
+$("islbtn").onclick = () => setOpen(!nav.classList.contains("open"));
+scrim.onclick = () => setOpen(false);
+nav.addEventListener("click", e => { if (e.target.closest("a")) setOpen(false); });
+addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
+function route(){
+  const ids = CFG.pages.map(p => p[0]);
+  const page = ids.includes(location.hash.slice(1)) ? location.hash.slice(1) : ids[0];
+  ids.forEach(id => $(id).classList.toggle("on", id === page));
+  document.querySelectorAll("nav a").forEach(a => a.classList.toggle("on", a.dataset.p === page));
+  $("isllabel").textContent = CFG.pages.find(p => p[0] === page)[1];
+  scrollTo(0, 0);
+}
+addEventListener("hashchange", route); route();
+const ghUrl = "https://github.com/" + CFG.github;
+document.querySelectorAll("[data-link]").forEach(a => {
+  a.href = a.dataset.link === "github" ? ghUrl : (hasId ? "https://discord.com/users/" + CFG.discordId : ghUrl);
+  if (a.dataset.text) a.textContent = "github.com/" + CFG.github;
+});
+$("note").hidden = hasId;
+
+/* ---------- data access: one fetch helper, one loader with visible failures ---------- */
+async function getJSON(url){
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url} returned HTTP ${r.status}`);
+  return r.json();
+}
+async function loadInto(id, label, task, render){
+  try { $(id).innerHTML = render(await task()); }
+  catch (err) { console.error("Failed to load " + label, err); $(id).innerHTML = `<div class="card sm">Couldn’t load ${esc(label)}. Try again later or <a href="${ghUrl}">open GitHub</a>.</div>`; }
+}
+
+/* ---------- presence: validate and normalise the Lanyard payload once ---------- */
+const STATUSES = ["online","idle","dnd","offline"];
+const VERB = ["Playing","Streaming","Listening to","Watching","","Competing in"];
+function assetUrl(a){
+  const i = a.assets && a.assets.large_image;
+  if (!i || i.startsWith("spotify:")) return "";
+  if (i.startsWith("mp:")) return "https://media.discordapp.net/" + i.slice(3);
+  return a.application_id ? `https://cdn.discordapp.com/app-assets/${a.application_id}/${i}.png` : "";
+}
+function toActivity(a, spotify){
+  const t = a.timestamps || {};
+  const art = a.name === "Spotify" && spotify ? spotify.album_art_url : assetUrl(a);
+  return { type: a.type, name: a.name || "Unknown", details: a.details || "", state: a.state || "", image: art, start: t.start || 0, end: t.end || 0 };
+}
+function parsePresence(raw){
+  const u = raw && raw.discord_user;
+  if (!u || typeof u.id !== "string" || !STATUSES.includes(raw.discord_status) || !Array.isArray(raw.activities)) throw new Error("Unexpected Lanyard payload");
+  const custom = raw.activities.find(a => a.type === 4);
+  return {
+    name: u.global_name || u.username, handle: u.username, status: raw.discord_status,
+    avatar: u.avatar ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith("a_") ? "gif" : "png"}?size=256` : "https://cdn.discordapp.com/embed/avatars/0.png",
+    custom: custom ? custom.state || "" : "",
+    activities: raw.activities.filter(a => a.type !== 4).map(a => toActivity(a, raw.spotify)),
+  };
+}
+
+/* ---------- rendering: pure functions that return HTML ---------- */
+function actCard(a, live = true){
+  const art = a.image ? ` style="--art:url(&quot;${esc(encodeURI(a.image))}&quot;)"` : "";
+  const timing = live && a.start ? (a.end ? `<div class="bar"><i data-s="${a.start}" data-e="${a.end}"></i></div>` : "") + `<p class="sm" data-t="${a.start}" data-e="${a.end}"></p>` : "";
+  return `<div class="card act"${art}>${a.image ? `<img src="${esc(a.image)}" alt="" loading="lazy">` : `<div class="ph">${esc(a.name.charAt(0).toUpperCase())}</div>`}
+  <div><p class="v">${VERB[a.type] || ""}</p><p><b>${esc(a.name)}</b></p>${a.details ? `<p>${esc(a.details)}</p>` : ""}${a.state ? `<p class="sm">${esc(a.state)}</p>` : ""}${timing}</div></div>`;
+}
+function renderPresence(p){
+  $("av").src = p.avatar; $("avwrap").dataset.s = p.status; $("isldot").dataset.s = p.status;
+  $("nm").textContent = p.name; $("un").textContent = `@${p.handle} · ${p.status}`;
+  $("cs").hidden = !p.custom; $("cs").textContent = p.custom;
+  $("meact").innerHTML = p.activities.map(a => actCard(a)).join("");
+  $("nowact").innerHTML = p.activities.length ? p.activities.map(a => actCard(a)).join("") : `<div class="card sm">Not doing anything right now.</div>`;
+  tick();
+}
+
+/* ---------- session log of activity changes ---------- */
+const seen = []; let lastKey = null;
+function trackSeen(p){
+  const key = p.activities.map(a => [a.name, a.details, a.state].join("|")).join(";");
+  if (key === lastKey) return;
+  if (lastKey !== null) p.activities.forEach(a => seen.unshift({ a, at: Date.now() }));
+  lastKey = key; seen.length = Math.min(seen.length, 10);
+  if (seen.length) $("seen").innerHTML = seen.map(s => actCard(s.a, false).replace("</div></div>", `<p class="sm">${ago(s.at)}</p></div></div>`)).join("");
+}
+
+/* ---------- clock: elapsed time and progress bars ---------- */
+const fmt = ms => { const t = Math.max(0, ms / 1000 | 0), h = t / 3600 | 0, m = t % 3600 / 60 | 0, s = t % 60; return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0"); };
+function tick(){
+  const now = Date.now();
+  document.querySelectorAll("[data-t]").forEach(el => { const s = +el.dataset.t, e = +el.dataset.e; el.textContent = e ? `${fmt(now - s)} / ${fmt(e - s)}` : `${fmt(now - s)} elapsed`; });
+  document.querySelectorAll(".bar i").forEach(el => { const s = +el.dataset.s, e = +el.dataset.e; el.style.width = Math.min(100, Math.max(0, (now - s) / (e - s) * 100)) + "%"; });
+}
+setInterval(tick, 1000);
+
+/* ---------- Lanyard connection: REST for first paint, socket for live updates ---------- */
+function onPresence(raw){
+  try { const p = parsePresence(raw); renderPresence(p); trackSeen(p); }
+  catch (err) { console.error(err); $("un").textContent = "Live status unavailable."; }
+}
+let retry = 0;
+function connect(){
+  const ws = new WebSocket("wss://api.lanyard.rest/socket"); let hb;
+  ws.onopen = () => { retry = 0; };
+  ws.onmessage = e => {
+    let m; try { m = JSON.parse(e.data); } catch (err) { console.error("Bad Lanyard frame", err); return; }
+    if (m.op === 1) {
+      ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: CFG.discordId } }));
+      hb = setInterval(() => ws.readyState === 1 && ws.send(JSON.stringify({ op: 3 })), m.d.heartbeat_interval);
+    } else if (m.op === 0) onPresence(m.d);
+  };
+  ws.onclose = () => { clearInterval(hb); setTimeout(connect, Math.min(60000, 2000 * 2 ** retry++)); };
+}
+if (hasId) {
+  getJSON("https://api.lanyard.rest/v1/users/" + CFG.discordId)
+    .then(j => { if (!j.success) throw new Error("Lanyard has no data for this ID. Join discord.gg/lanyard."); onPresence(j.data); })
+    .catch(err => { console.error(err); $("un").textContent = "Join the Lanyard Discord server to show live status."; });
+  connect();
+} else $("un").textContent = "Add your Discord ID to show live status.";
+
+/* ---------- GitHub ---------- */
+loadInto("repos", "repositories", async () => {
+  const rs = await getJSON(`https://api.github.com/users/${CFG.github}/repos?sort=pushed&per_page=5`);
+  if (!Array.isArray(rs) || !rs.length) throw new Error("No public repositories");
+  return rs;
+}, rs => rs.map(r => `<a class="card" href="${esc(r.html_url)}" target="_blank" rel="noopener"><h4>${esc(r.name)}</h4><p class="sm">${esc(r.description || "No description yet.")}</p>${r.language ? `<span class="tag">${esc(r.language)}</span>` : ""}<span class="tag">${r.stargazers_count} stars</span><span class="tag">pushed ${ago(r.pushed_at)}</span></a>`).join(""));
+
+loadInto("cg", "the contribution chart", async () => {
+  const j = await getJSON(`https://github-contributions-api.jogruber.de/v4/${CFG.github}?y=last`);
+  if (!j.contributions || !j.contributions.length) throw new Error("Empty contribution data");
+  return j.contributions;
+}, days => {
+  const pad = new Date(days[0].date + "T00:00:00Z").getUTCDay();
+  $("ctotal").textContent = "(" + days.reduce((n, d) => n + d.count, 0) + ")";
+  requestAnimationFrame(() => { $("cg").scrollLeft = $("cg").scrollWidth; });
+  return `<div class="cells">${'<i class="hide"></i>'.repeat(pad)}${days.map(d => `<i class="l${d.level}" title="${d.count} on ${d.date}"></i>`).join("")}</div>`;
+});
+
+const EVENT_TEXT = {
+  PushEvent: (p, r) => { const n = p.size || (p.commits || []).length || 1; return `Pushed ${n} commit${n > 1 ? "s" : ""} to ${r}`; },
+  CreateEvent: (p, r) => `Created ${p.ref_type} ${p.ref || r}`,
+  WatchEvent: (p, r, e) => `Starred ${e.repo.name}`,
+  PullRequestEvent: (p, r) => `${p.action} a pull request in ${r}`,
+  IssuesEvent: (p, r) => `${p.action} an issue in ${r}`,
+  ForkEvent: (p, r, e) => `Forked ${e.repo.name}`,
+};
+loadInto("events", "recent GitHub activity", async () => {
+  const ev = await getJSON(`https://api.github.com/users/${CFG.github}/events/public?per_page=8`);
+  if (!Array.isArray(ev) || !ev.length) throw new Error("No public events");
+  return ev;
+}, ev => ev.map(e => { const r = e.repo.name.split("/")[1], f = EVENT_TEXT[e.type]; return `<div class="card"><p>${esc(f ? f(e.payload, r, e) : e.type.replace("Event", "") + " in " + r)}</p><p class="sm">${ago(e.created_at)}</p></div>`; }).join(""));
+</script>
+</body>
+</html>
